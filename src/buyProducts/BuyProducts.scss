@@ -1,0 +1,8 @@
+.update {
+    display: flex; /* Configura el contenedor como un contenedor flex */
+}
+
+.leftColumn, .rightColumn {
+    flex: 1; /* Distribuye el espacio igualmente entre las dos columnas */
+    padding: 0 20px; /* Añade un poco de espacio entre las columnas */
+}
