@@ -47,3 +47,10 @@ export interface ProductSummary {
   lastUpdatedAt: string;
   categoryName: string;
 }
+
+export interface Sale {
+  _id: string;
+  quantitySold: number;
+  salePrice: number;
+  saleDate: string;
+}
