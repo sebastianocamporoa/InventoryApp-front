@@ -93,7 +93,8 @@ const ProductList = () => {
         groupedProducts[key].averageUnitCost = averageUnitCost;
 
         //Precio de venta actual
-        groupedProducts[key].currentSalePrice = averageUnitCost + averageUnitCost * 0.2;
+        groupedProducts[key].currentSalePrice =
+          averageUnitCost + averageUnitCost * 0.2;
 
         // Para la fecha de registro, tomamos la más vieja.
         if (
@@ -144,7 +145,6 @@ const ProductList = () => {
           };
         });
         const groupedData = groupAndSumProducts(transformedData); // Usamos la función para agrupar y sumar.
-        console.log(groupedData);
         setData(groupedData);
       })
       .catch((error) => {
@@ -196,7 +196,6 @@ const ProductList = () => {
         quantity: quantity,
         unitCost: averageUnitCost,
       };
-      console.log(body);
       const response = await api.post("/products", body);
 
       // Comprobar el estado de la respuesta
@@ -416,9 +415,6 @@ const ProductList = () => {
   return (
     <div className="productListPage">
       <div className="buttonContainer">
-      <button className="addButton" onClick={handleOpen}>
-          Vender
-        </button>
         <button className="addButton" onClick={handleOpen}>
           Agregar
         </button>

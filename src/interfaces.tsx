@@ -18,7 +18,9 @@ export interface Product {
   _id: string;
   name: string;
   quantityInStock: number;
+  quantity: number;
   averageUnitCost: number;
+  unitCost: number;
   currentSalePrice: number;
   category: string;
   createdAt: string;

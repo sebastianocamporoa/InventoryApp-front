@@ -5,6 +5,7 @@ import Home from "./pages/home/Home";
 import ProductList from "./pages/productList/ProductList";
 import CategoryList from "./pages/CategoryList/CategoryList";
 import "./styles/app.scss";
+import SellProducts from "./sellProducts/SellProducts";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/categories" element={<CategoryList />} />
           <Route path="/products" element={<ProductList />} />
+          <Route path="/newPurchase" element={<SellProducts />} />
         </Routes>
       </div>
     </Router>
