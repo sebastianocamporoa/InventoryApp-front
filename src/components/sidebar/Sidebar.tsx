@@ -35,13 +35,9 @@ const Sidebar = () => {
             <Link to="/newPurchase" className="link">
               <li>
                 <TrendingUp className="icon" />
-                Compra de productos
+                Venta de productos
               </li>
             </Link>
-            <li>
-              <TrendingUp className="icon" />
-              Venta de productos
-            </li>
           </ul>
         </div>
       </div>
