@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Modal, Box, Typography } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import api from "../api";
 import { Category, Product, TransformedProduct } from "../interfaces";
 import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 
-const products = [
-  { id: 1, name: "Producto A", category: "Categoría 1", stock: 5, price: 100 },
-  { id: 2, name: "Producto B", category: "Categoría 2", stock: 0, price: 150 },
-  // ... Añade más productos aquí
-];
-
 const SellProducts = () => {
   const [data, setData] = useState<TransformedProduct[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [filteredProducts, setFilteredProducts] = useState(data);
   const [selectedProduct, setSelectedProduct] =
     useState<TransformedProduct | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [quantityToSell, setQuantityToSell] = useState<number>(0);
+  const [salePrice, setSalePrice] = useState<number>(0);
 
   useEffect(() => {
     api
@@ -86,7 +82,7 @@ const SellProducts = () => {
               associatedColor: associatedCategory
                 ? associatedCategory.associatedColor
                 : "transparent", // Guardamos el color asociado
-              unitCost: product.unitCost
+              unitCost: product.unitCost,
             };
           }
         );
@@ -102,7 +98,7 @@ const SellProducts = () => {
   }, []);
 
   const handleSearch = () => {
-    const results = products.filter(
+    const results = data.filter(
       (p) => p.name.includes(searchTerm) || p.category.includes(searchTerm)
     );
     setFilteredProducts(results);
@@ -110,6 +106,8 @@ const SellProducts = () => {
 
   const handleOpenModal = (product: TransformedProduct) => {
     setSelectedProduct(product);
+    setQuantityToSell(0);
+    setSalePrice(product.unitCost);
     setIsModalOpen(true);
   };
 
@@ -127,8 +125,7 @@ const SellProducts = () => {
   };
 
   const columns: any[] = [
-    { field: "id", headerName: "ID", width: 200 },
-    { field: "name", headerName: "Nombre del Producto", width: 100 },
+    { field: "name", headerName: "Nombre del Producto", width: 250 },
     {
       field: "category",
       headerName: "Categoria",
@@ -174,6 +171,78 @@ const SellProducts = () => {
     },
   ];
 
+  const handleSell = async () => {
+    if (selectedProduct) {
+      try {
+        const response = await api.post("/products/sell", {
+          productName: selectedProduct.name,
+          productCategory: selectedProduct.category,
+          quantitySold: quantityToSell,
+          salePrice: salePrice,
+        });
+
+        if (response.status === 201) {
+          alert("Venta realizada con éxito");
+          handleCloseModal(); // Cierra el modal después de la venta
+          loadProducts(); // Recarga los productos para mostrar las cantidades actualizadas
+        } else {
+          alert("Error en la venta");
+        }
+      } catch (error) {
+        console.error("Hubo un error al vender el producto:", error);
+      }
+    }
+  };
+
+  const modalBody = (
+    <Box
+      sx={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 400,
+        bgcolor: "background.paper",
+        border: "2px solid #000",
+        boxShadow: 24,
+        p: 4,
+      }}
+    >
+      <Typography variant="h6" component="h2">
+        Vender {selectedProduct?.name}
+      </Typography>
+      <br />
+      <form noValidate autoComplete="off">
+        <TextField
+          margin="dense"
+          id="quantity"
+          label="Cantidad a Vender"
+          type="number"
+          fullWidth
+          value={quantityToSell}
+          onChange={(e) => setQuantityToSell(Number(e.target.value))}
+        />
+
+        <TextField
+          margin="dense"
+          id="quantity"
+          label="Precio de Venta"
+          type="number"
+          fullWidth
+          value={salePrice}
+          onChange={(e) => setSalePrice(Number(e.target.value))}
+        />
+        {/* Botones del formulario */}
+        <Box display="flex" justifyContent="space-between" mt={2}>
+          <Button onClick={handleCloseModal}>Cerrar</Button>
+          <Button variant="contained" color="primary" onClick={handleSell}>
+            Confirmar Venta
+          </Button>
+        </Box>
+      </form>
+    </Box>
+  );
+
   return (
     <div className="productListPage">
       <TextField
@@ -185,6 +254,17 @@ const SellProducts = () => {
       <Button onClick={handleSearch} startIcon={<Search />}>
         Buscar
       </Button>
+
+      {isModalOpen && (
+        <Modal
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          {modalBody}
+        </Modal>
+      )}
 
       <DataGrid
         rows={data}
