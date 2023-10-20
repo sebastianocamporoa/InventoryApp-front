@@ -38,3 +38,12 @@ export interface TransformedProduct {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ProductSummary {
+  _id: {
+    name: string;
+    category: string;
+  };
+  lastUpdatedAt: string;
+  categoryName: string;
+}
