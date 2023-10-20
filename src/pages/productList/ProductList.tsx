@@ -240,6 +240,30 @@ const ProductList = () => {
       field: "quantity",
       headerName: "Cantidad en existencia",
       width: 180,
+      renderCell: (params: GridRenderCellParams) => {
+        const quantity = params.value;
+        let bgColor;
+
+        if (quantity < 100) {
+          bgColor = "red";
+        } else if (quantity >= 100 && quantity < 200) {
+          bgColor = "orange";
+        } else {
+          bgColor = "transparent";
+        }
+        return (
+          <div
+            style={{
+              backgroundColor: bgColor,
+              width: "100%",
+              padding: "10px",
+              borderRadius: "15px",
+            }}
+          >
+            {quantity}
+          </div>
+        );
+      },
     },
     {
       field: "category",
